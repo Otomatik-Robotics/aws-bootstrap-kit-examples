@@ -11,8 +11,8 @@
     "test": "echo no tests",
     "cdk": "cdk",
     "bootstrap": "cdk --profile otosheets-admin bootstrap --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess",
-    "synth": "cdk --profile main-admin synth",
-    "deploy": "cdk --profile main-admin deploy"
+    "synth": "cdk --profile otosheets-admin synth",
+    "deploy": "cdk --profile otosheets-admin deploy"
   },
   "devDependencies": {
     "@aws-cdk/assert": "2.1.0",
