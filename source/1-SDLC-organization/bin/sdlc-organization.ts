@@ -14,71 +14,67 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import 'source-map-support/register';
-import * as cdk from 'aws-cdk-lib';
-import {
-    AWSBootstrapKitLandingZonePipelineStack,
-    AWSBootstrapKitLandingZoneStage
-} from '../lib/cicd-stack';
-import {AccountType} from 'aws-bootstrap-kit';
+import 'source-map-support/register'
+import * as cdk from 'aws-cdk-lib'
+import { AWSBootstrapKitLandingZonePipelineStack, AWSBootstrapKitLandingZoneStage } from '../lib/cicd-stack'
+import { AccountType } from 'aws-bootstrap-kit'
 
-const app = new cdk.App();
+const app = new cdk.App()
 
-const email = app.node.tryGetContext("email");
-const rootHostedZoneDNSName = app.node.tryGetContext("domain_name");
-const thirdPartyProviderDNSUsed = app.node.tryGetContext("third_party_provider_dns_used");
-const forceEmailVerification = app.node.tryGetContext("force_email_verification");
-const pipelineDeployableRegions = app.node.tryGetContext("pipeline_deployable_regions");
+const email = app.node.tryGetContext('email')
+const rootHostedZoneDNSName = app.node.tryGetContext('domain_name')
+const thirdPartyProviderDNSUsed = app.node.tryGetContext('third_party_provider_dns_used')
+const forceEmailVerification = app.node.tryGetContext('force_email_verification')
+const pipelineDeployableRegions = app.node.tryGetContext('pipeline_deployable_regions')
 const nestedOU = [
-    {
-        name: 'SharedServices',
-        accounts: [
-            {
-                name: 'CICD',
-                type: AccountType.CICD
-            }
-        ]
-    },
-    {
-        name: 'SDLC',
-        accounts: [
-            {
-                name: 'Dev',
-                type: AccountType.PLAYGROUND
-            },
-            {
-                name: 'Staging',
-                type: AccountType.STAGE,
-                stageName: 'staging',
-                stageOrder: 1,
-                hostedServices: ['ALL']
-            }
-        ]
-    },
-    {
+  {
+    name: 'SharedServices',
+    accounts: [
+      {
+        name: 'CICD',
+        type: AccountType.CICD,
+      },
+    ],
+  },
+  {
+    name: 'SDLC',
+    accounts: [
+      {
+        name: 'Dev',
+        type: AccountType.PLAYGROUND,
+      },
+      {
+        name: 'Staging',
+        type: AccountType.STAGE,
+        stageName: 'staging',
+        stageOrder: 1,
+        hostedServices: ['ALL'],
+      },
+    ],
+  },
+  {
+    name: 'Prod',
+    accounts: [
+      {
         name: 'Prod',
-        accounts: [
-            {
-                name: 'Prod',
-                type: AccountType.STAGE,
-                stageName: 'prod',
-                stageOrder: 2,
-                hostedServices: ['ALL'],
-                // when using bootstrap kit on existing organisation, you can import existing accounts in the OU hierarchy:
-                // existingAccountId: '123456789012'
-            }
-        ]
-    }
-];
+        type: AccountType.STAGE,
+        stageName: 'prod',
+        stageOrder: 2,
+        hostedServices: ['ALL'],
+        // when using bootstrap kit on existing organisation, you can import existing accounts in the OU hierarchy:
+        // existingAccountId: '123456789012'
+      },
+    ],
+  },
+]
 
-
-new AWSBootstrapKitLandingZoneStage(app, 'Prod',{
+new AWSBootstrapKitLandingZoneStage(app, 'Prod', {
   email,
   forceEmailVerification,
   nestedOU,
   rootHostedZoneDNSName,
-  thirdPartyProviderDNSUsed
-});
+  thirdPartyProviderDNSUsed,
+})
 
 new AWSBootstrapKitLandingZonePipelineStack(app, 'AWSBootstrapKit-LandingZone-PipelineStack', {
   email,
@@ -86,5 +82,5 @@ new AWSBootstrapKitLandingZonePipelineStack(app, 'AWSBootstrapKit-LandingZone-Pi
   pipelineDeployableRegions,
   nestedOU,
   rootHostedZoneDNSName,
-  thirdPartyProviderDNSUsed
-});
+  thirdPartyProviderDNSUsed,
+})
